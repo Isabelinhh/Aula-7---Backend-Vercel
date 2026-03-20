@@ -172,15 +172,19 @@ router.put('/:id', async (req, res, next) => {
 //   Método: DELETE
 //   URL: http://localhost:3000/api/produtos/2
 // =============================================================
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res, next) => {
+    try{
+        const {id} = req.params;
+        const {error} = await supabase
+        .from('produtos')
+        .delete()
+        .eq('id', id);
 
-    const produtoId = parseInt(req.params.id);
-
-    // .filter() cria um NOVO array excluindo o produto com o ID informado.
-    // Reatribuímos db.produtos (por isso usamos 'let' na importação).
-    db.produtos = db.produtos.filter(p => p.id !== produtoId);
-
-    res.json({ mensagem: 'Produto deletado com sucesso!' });
+        if(error) throw error;
+        res.json({mensagem: 'produto deletado'});
+    }catch (err){
+        next(err);
+    }
 });
 
 // ─── Exportação do Router ─────────────────────────────────────
