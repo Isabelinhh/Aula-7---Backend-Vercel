@@ -59,7 +59,7 @@ try{
     let consulta = supabase.from('produtos').select('*');
 
     if (categoriaId){
-        consulta = consulta.eq('categoriaId', categoriaid)
+        consulta = consulta.eq('categoriaId', categoriaId)
     }
 
     const {data, error} = await consulta.order('id', {ascending: true});
@@ -92,6 +92,7 @@ try{
 
     if (error) throw error;
     if(data){
+        res.json(data);
     }else{
         res.status(404).json({mensagem: 'não encontrado'});
 
@@ -123,7 +124,7 @@ router.post('/', async (req, res, next) => {
         .insert([req.body])
         .select()
         if(error) throw error;
-        req.status(201).json(data[0]);
+        res.status(201).json(data[0]);
 
     }catch (err) {
         next(err);
